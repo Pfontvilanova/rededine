@@ -1,0 +1,45 @@
+\ *****************************************************
+\                  editor de paraules
+\ NOM: redefinir.fs
+\ autor: Pere Font
+\ data: 22-6-2024
+\ allows to change any word defined with " : "
+\ *****************************************************
+
+-redefine
+marker -redefine
+
+flash
+variable cfavell \ adress old word to redifine
+variable newone  \ adress word redefined
+ram
+: 'cfavell ' cfavell ! ;
+: newdefinition: :noname newone ! ; \ new word definition 
+: vell! cfavell @ cf! ;  \ save the CFA to the flash
+: newone-real newone @ >xa ; \ convert newone to real adress
+: redefine ." new definition: " newdefinition: \ ask for the new definition 
+        newone-real 4 vell! \ put in the old definition a goto to the new def
+	cfavell @ 2+ cfavell ! \ next cell in the PFA
+	0 0 vell!  \ put a return
+ ;
+: edit 'cfavell redefine ; \ application word
+
+\ ussage : edit < name >  then you enter the new definition, without : neither name.
+
+\ testing examples**********************************
+
+: word1 ." this is an example" ;
+: word2 ." this write the word1 : " word1 ;
+: word3 4 for word1 next ;
+\ check now all the 3 words and after do it, do
+\edit word1....appear new definition:
+\ cr ." this is the good example " ; then try to write word1, you will see the difference
+\ edit word2---> new definition:
+\cr ." this write the good word1: " word1 ;
+\ check word2 and also check word3
+
+
+
+
+           
+

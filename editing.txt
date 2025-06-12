@@ -1,0 +1,34 @@
+recordfile /spiffs/editing.fs
+
+\ *****************************************************
+\         editor de paraules
+\ NOM: editar.fs
+\ autor: Pere Font
+\ permet modificar qualsevol paraula definida amb " : "
+\ *****************************************************
+
+hex
+
+' ; 3 cells + @ constant dotcomma 	\ guarda la adreça del cfa de ; ( cada placa te el seu ,ull )
+variable PFAVELL	        \ guarda la dreça del PFA de la paraula original
+value CFANOU			\ guarda la adreça del CFA de la paraula modificada
+
+0 pfavell !
+0 to cfanou		\ inicialitza
+
+: redefine	CFANOU  PFAVELL @ ! \ posa el cfa de la modif al pfa de la original  \ entra la nova definicio i guarda el cfa en la variable cfanou
+		dotcomma PFAVELL @ cell+ ! ; \ posa ; a la segona cella
+
+
+: EDIT ' >body PFAVELL ! ." nova definicio: "  :noname to cfanou redefine ;	\ ompla la variable amb el valor del PFA crida noname
+
+
+
+
+decimal
+
+\ us: EDIT <paraula>, per canviar:
+\ entrar la nova definicio i
+\ en ESP32 forth el valor de dotcomma s'obte fent:( ' ; 3 cells + @ )
+
+<EOF>
